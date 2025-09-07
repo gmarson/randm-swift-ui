@@ -14,10 +14,8 @@ struct SearchView: View {
     var body: some View {
         
         NavigationStack {
-            List {
-                Text("Search")
-                Text("Search")
-                Text("Search")
+            List(viewModel.characters) { character in
+                CharacterView(character: character)
             }
             .searchable(text: $viewModel.searchText, prompt: "Search characters")
             .navigationTitle("Character")
@@ -27,5 +25,5 @@ struct SearchView: View {
 }
 
 #Preview {
-    SearchView(viewModel: SearchViewModel())
+    SearchView(viewModel: SearchViewModel(service: ClientAPIDebug()))
 }

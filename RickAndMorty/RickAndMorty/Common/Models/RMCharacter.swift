@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RMCharacter: Codable {
+struct RMCharacter: Codable, Identifiable {
     
     enum Status: String {
         case alive = "Alive"
