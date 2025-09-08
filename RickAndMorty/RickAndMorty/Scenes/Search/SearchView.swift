@@ -19,22 +19,22 @@ struct SearchView: View {
                     contentUnavailableView(title: "Search Characters", systemImage: "magnifyingglass", description: "Enter a character name to search")
                 case .loading:
                     ProgressView("Searching...")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                 case .loaded(let characters):
                     List(characters) { character in
                         CharacterView(character: character)
-                            .frame(maxWidth: .infinity)
                             .frame(height: 210)
                             .cornerRadius(8)
                             .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
+                            .listRowInsets(EdgeInsets(top: 8.0, leading: 0.0, bottom: 8.0, trailing: 0.0))
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .scrollContentBackground(.hidden)
                     .background(Color.background)
                 case .error(let message):
                     ContentUnavailableView("Error", systemImage: "exclamationmark.triangle", description: Text(message))
                 }
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .searchable(text: $viewModel.searchText, prompt: "Search characters")
             .navigationTitle("Character")
             .navigationBarTitleDisplayMode(.large)
@@ -47,11 +47,12 @@ struct SearchView: View {
                 UINavigationBar.appearance().standardAppearance = appearance
                 UINavigationBar.appearance().scrollEdgeAppearance = appearance
                 
-                // Customize the text color of the search field
-                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).textColor = .softWhite
-                // Customize the placeholder text color
-                let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.lightGray]
-                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).attributedPlaceholder = NSAttributedString(string: "Search", attributes: attributes)
+                // Customize the search field appearance
+                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).textColor = Color.softWhite.uiColor
+                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).attributedPlaceholder = NSAttributedString(
+                    string: "Search characters",
+                    attributes: [.foregroundColor: UIColor.lightGray]
+                )
             }
         }
     }

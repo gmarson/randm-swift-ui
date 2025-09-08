@@ -51,7 +51,10 @@ struct CharacterView: View {
                         .padding(.bottom)
                 }
             }
+            .padding(.leading)
+            .padding(.trailing)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.cellBackground)
         
     }
