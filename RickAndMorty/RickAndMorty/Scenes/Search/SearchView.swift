@@ -46,6 +46,12 @@ struct SearchView: View {
                 appearance.largeTitleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
                 UINavigationBar.appearance().standardAppearance = appearance
                 UINavigationBar.appearance().scrollEdgeAppearance = appearance
+                
+                // Customize the text color of the search field
+                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).textColor = .softWhite
+                // Customize the placeholder text color
+                let attributes: [NSAttributedString.Key: Any] = [.foregroundColor: UIColor.lightGray]
+                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).attributedPlaceholder = NSAttributedString(string: "Search", attributes: attributes)
             }
         }
     }
