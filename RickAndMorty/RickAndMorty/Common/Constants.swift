@@ -29,10 +29,6 @@ extension Color {
     
 }
 
-extension UIColor {
-    static let softWhite: UIColor = Color.softWhite.uiColor
-}
-
 extension Image {
     
     static let notFound: Image = Image(.notFound)

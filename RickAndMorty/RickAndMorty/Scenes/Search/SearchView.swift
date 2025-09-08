@@ -40,25 +40,42 @@ struct SearchView: View {
             .navigationBarTitleDisplayMode(.large)
             .background(Color.background)
             .onAppear {
-                let appearance = UINavigationBarAppearance()
-                appearance.configureWithTransparentBackground()
-                appearance.titleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
-                appearance.largeTitleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
-                UINavigationBar.appearance().standardAppearance = appearance
-                UINavigationBar.appearance().scrollEdgeAppearance = appearance
-                
-                // Customize the search field appearance
-                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).textColor = Color.softWhite.uiColor
-                UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).attributedPlaceholder = NSAttributedString(
-                    string: "Search characters",
-                    attributes: [.foregroundColor: UIColor.lightGray]
-                )
+                setNavigationBarAppeareance()
+                setUISearchBarAppeareance()
             }
         }
     }
     
+    private func setUISearchBarAppeareance() {
+        // Customize the search field appearance
+        UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).textColor = Color.softWhite.uiColor
+        UISearchTextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).attributedPlaceholder = NSAttributedString(
+            string: "Search characters",
+            attributes: [.foregroundColor: UIColor.lightGray]
+        )
+        
+        // Customize the search icon
+        UISearchBar.appearance().searchTextPositionAdjustment = UIOffset(horizontal: 0, vertical: 0)
+        UISearchBar.appearance().setImage(UIImage(systemName: "magnifyingglass")?.withTintColor(Color.softWhite.uiColor, renderingMode: .alwaysOriginal), for: .search, state: .normal)
+        
+        // Customize the cancel button
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).tintColor = Color.softWhite.uiColor
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes([
+            .foregroundColor: Color.softWhite.uiColor
+        ], for: .normal)
+    }
     
-    func contentUnavailableView(title: String, systemImage: String, description: String) -> some View {
+    private func setNavigationBarAppeareance() {
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = Color.background.uiColor
+        appearance.titleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
+        appearance.largeTitleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+    }
+    
+    private func contentUnavailableView(title: String, systemImage: String, description: String) -> some View {
         ContentUnavailableView(
             title,
             systemImage: systemImage,
