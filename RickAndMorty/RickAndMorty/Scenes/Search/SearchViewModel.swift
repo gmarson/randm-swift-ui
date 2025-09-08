@@ -8,10 +8,25 @@
 import Combine
 import Foundation
 
+enum SearchState {
+    case idle
+    case loading
+    case loaded([RMCharacter])
+    case error(String)
+}
+
+@MainActor
 class SearchViewModel: ObservableObject {
     
     @Published var searchText: String = ""
-    @Published var characters: [RMCharacter] = []
+    @Published var state: SearchState = .idle
+    
+    var characters: [RMCharacter] {
+        if case .loaded(let characters) = state {
+            return characters
+        }
+        return []
+    }
     
     var service: ClientAPI
     private var cancellables = Set<AnyCancellable>()
@@ -23,22 +38,32 @@ class SearchViewModel: ObservableObject {
     
     func setupObservers() {
         $searchText
-            .throttle(for: .seconds(3), scheduler: DispatchQueue.main, latest: true)
+            .debounce(for: .seconds(1), scheduler: DispatchQueue.main)
+            .removeDuplicates()
             .sink { [weak self] searchText in
-                guard let self, !searchText.isEmpty else { return }
-                Task {
-                    let response = await self.service.character(name: searchText)
-                    await MainActor.run {
-                        switch response.result {
-                        case .success(let characters):
-                            self.characters = characters
-                        case .failure(let error):
-                            break
-                        }
+                guard let self else { return }
+                if searchText.isEmpty {
+                    self.state = .idle
+                } else {
+                    Task {
+                        await self.search(for: searchText)
                     }
                 }
             }
             .store(in: &cancellables)
+    }
+    
+    private func search(for query: String) async {
+        state = .loading
+        
+        let response = await service.character(name: query)
+        
+        switch response.result {
+        case .success(let characters):
+            state = .loaded(characters)
+        case .failure(let error):
+            state = .error(error.localizedDescription)
+        }
     }
     
 }

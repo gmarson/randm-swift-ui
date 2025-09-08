@@ -12,16 +12,53 @@ struct SearchView: View {
     @StateObject var viewModel: SearchViewModel
     
     var body: some View {
-        
         NavigationStack {
-            List(viewModel.characters) { character in
-                CharacterView(character: character)
+            Group {
+                switch viewModel.state {
+                case .idle:
+                    contentUnavailableView(title: "Search Characters", systemImage: "magnifyingglass", description: "Enter a character name to search")
+                case .loading:
+                    ProgressView("Searching...")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                case .loaded(let characters):
+                    List(characters) { character in
+                        CharacterView(character: character)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 210)
+                            .cornerRadius(8)
+                            .listRowBackground(Color.clear)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .scrollContentBackground(.hidden)
+                    .background(Color.background)
+                case .error(let message):
+                    ContentUnavailableView("Error", systemImage: "exclamationmark.triangle", description: Text(message))
+                }
             }
             .searchable(text: $viewModel.searchText, prompt: "Search characters")
             .navigationTitle("Character")
+            .navigationBarTitleDisplayMode(.large)
+            .background(Color.background)
+            .onAppear {
+                let appearance = UINavigationBarAppearance()
+                appearance.configureWithTransparentBackground()
+                appearance.titleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
+                appearance.largeTitleTextAttributes = [.foregroundColor: Color.softWhite.uiColor]
+                UINavigationBar.appearance().standardAppearance = appearance
+                UINavigationBar.appearance().scrollEdgeAppearance = appearance
+            }
         }
-        
     }
+    
+    
+    func contentUnavailableView(title: String, systemImage: String, description: String) -> some View {
+        ContentUnavailableView(
+            title,
+            systemImage: systemImage,
+            description: Text(description)
+        ).foregroundStyle(Color.softWhite)
+    }
+    
 }
 
 #Preview {

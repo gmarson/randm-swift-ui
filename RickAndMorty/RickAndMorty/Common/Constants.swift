@@ -21,6 +21,18 @@ extension Color {
     
 }
 
+extension Color {
+    
+    var uiColor: UIColor {
+        UIColor(self)
+    }
+    
+}
+
+extension UIColor {
+    static let softWhite: UIColor = Color.softWhite.uiColor
+}
+
 extension Image {
     
     static let notFound: Image = Image(.notFound)
